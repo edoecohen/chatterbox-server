@@ -11,7 +11,7 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
-var classes = {}; // eachURliskey : []
+var classes = { '/classes/messages': [] , '/classes/room1': []}; // eachURliskey : []
 
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
@@ -34,11 +34,19 @@ var requestHandler = function(request, response) {
   var statusCode = 200;
   var qs = require('querystring');
   var resArr = [];
+  var json = JSON.stringify({ results: [] });
 
   // URL, Method, msg{}
 
   if(request.method === 'GET'){
-    resArr = classes[request.url];
+    console.log(classes);
+    console.log('the requested', request.url);
+    if(classes[request.url]){
+      json = JSON.stringify({ results: classes[request.url] });
+    }
+    else {
+      statusCode = 404;
+    }
   }
 
   if(request.method === 'POST'){
@@ -46,7 +54,9 @@ var requestHandler = function(request, response) {
 
     var body = "";
     request.on('data', function(data){
+      console.log('data is :', data)
       body += data;
+      console.log('body is :', body)
     });
 
     request.on('end', function() {
@@ -55,13 +65,12 @@ var requestHandler = function(request, response) {
       if(!classes.hasOwnProperty(request.url)) {
         classes[request.url] = [];
       }
-      // TODO: convert to obj then push
-      classes[request.url].push(body);
+
+      classes[request.url].push(JSON.parse(body));
      console.log(classes[request.url]);
     });
   }
 
-  var json = JSON.stringify({ results: resArr });
 
 
   // See the note below about CORS headers.

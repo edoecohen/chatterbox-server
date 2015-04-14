@@ -64,7 +64,6 @@ describe('Node Server Request Listener Function', function() {
     };
     var req = new stubs.request('/classes/room1', 'POST', stubMsg);
     var res = new stubs.response();
-    console.log(req);
 
     handler.requestHandler(req, res);
 
