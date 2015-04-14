@@ -1,13 +1,13 @@
 var app = {};
 
 
-app.server = 'https://api.parse.com/1/classes/chatterbox';
+app.server = 'http://127.0.0.1:3000/classes/room1';
 
 app.send = function(msgObj){
-  
+
   $.ajax({
     // always use this url
-    url: 'https://api.parse.com/1/classes/chatterbox',
+    url: this.server,
     type: 'POST',
     data: JSON.stringify(msgObj),
     contentType: 'application/json',
@@ -38,12 +38,16 @@ app.fetch = function() {
   $.ajax({
     url: this.server,
     type: 'GET',
-    data: { order: '-updatedAt', limit : 50 },
+    dataType: 'json',
     contentType: 'application/json',
-    
+
     success: function (data) {
 
+      console.log('successful get request');
+      // console.log(data);
+      // console.log(data['results']);
       $.each(data.results, function(i, item) {
+        console.log(item);
         if(item.username){
           item.username = item.username.replace('<', '&lt;');
           item.username = item.username.replace('>', '&gt;');
@@ -63,7 +67,7 @@ app.fetch = function() {
       });
 
       app.changeRoom();
-      
+
       $('.username').on('click', function(){
         var newFriend = $(this).text();
         app.addFriend(newFriend);
@@ -146,7 +150,7 @@ app.changeName = function(){
     }
 
     $('.username-modal').modal('hide');
-    
+
   });
 }
 

@@ -11,7 +11,7 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
-var classes = { '/classes/messages': [] , '/classes/room1': []}; // eachURliskey : []
+var classes = { '/classes/messages': [] , '/classes/room1': [ {username: 'Joker123', text: 'this is a test'}] }; // eachURliskey : []
 
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
@@ -30,10 +30,10 @@ var requestHandler = function(request, response) {
   // console.logs in your code.
   console.log("Serving request type " + request.method + " for url " + request.url);
 
+  console.log(request.url);
+
   // The outgoing status.
   var statusCode = 200;
-  var qs = require('querystring');
-  var resArr = [];
   var json = JSON.stringify({ results: [] });
 
   // URL, Method, msg{}
