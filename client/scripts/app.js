@@ -4,10 +4,10 @@ var app = {};
 app.server = 'http://127.0.0.1:3000/classes/room1';
 
 app.send = function(msgObj){
-  
+
   $.ajax({
     // always use this url
-    url: 'https://api.parse.com/1/classes/chatterbox',
+    url: this.server,
     type: 'POST',
     data: JSON.stringify(msgObj),
     contentType: 'application/json',
@@ -38,8 +38,10 @@ app.fetch = function() {
     type: 'GET',
     dataType: 'json',
     contentType: 'application/json',
-    
+
     success: function (data) {
+
+      app.clearMessages();
 
       $.each(data.results, function(i, item) {
         if(item.username){
@@ -72,10 +74,13 @@ app.fetchRoom = function(room) {
   $.ajax({
     url: this.server,
     type: 'GET',
-    data: 'where={"roomname":"' + room + '"}', order: '-updatedAt',
+    dataType: 'json',
+   // data: 'where={"roomname":"' + room + '"}', order: '-updatedAt',
     contentType: 'application/json',
-    
+
     success: function (data) {
+
+      app.clearMessages();
 
       $.each(data.results, function(i, item) {
         if(item.username){
@@ -90,7 +95,9 @@ app.fetchRoom = function(room) {
         if(item.text){
           item.text = item.text.replace('<', '&lt;');
           item.text = item.text.replace('>', '&gt;');
-          app.addMessage.call(this, item);
+          if(this.roomname === room){
+            app.addMessage.call(this, item);
+          }
         }
       });
       app.clickFriend();
@@ -107,7 +114,6 @@ app.changeRoom = function(){
   $('.dropdown-inverse').on('click', 'a', function(){
     app.room = $(this).text();
     $('.room-info h1').text(app.room);
-    app.clearMessages();
     if(app.room === 'All Chats'){
       app.fetch();
     }
@@ -179,7 +185,7 @@ app.changeName = function(){
     }
 
     $('.username-modal').modal('hide');
-    
+
   });
 }
 
@@ -227,9 +233,9 @@ app.init = function() {
   app.createRoom();
   app.changeRoom();
   app.changeName();
-  
-  
-  
+
+
+
   // WHEN YOU CLICK ON THE LOGO
   $('.navbar-brand').on('click', function(){
     app.clearMessages();

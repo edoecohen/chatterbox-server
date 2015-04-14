@@ -11,7 +11,8 @@ this file and include it in basic-server.js so that it actually works.
 *Hint* Check out the node module documentation at http://nodejs.org/api/modules.html.
 
 **************************************************************/
-var classes = { '/classes/messages': [] , '/classes/room1': [ {username: 'Joker123', text: 'this is a test'}] }; // eachURliskey : []
+var classes = { '/classes/messages': [] , '/classes/room1': [ {username: 'Joker123', text: 'this is a test', roomname: 'Lobby'}, {username: 'Batman', text: 'Robin where art thou?', roomname: 'The Kitchen'}] }; // eachURliskey : []
+var fs = require('fs');
 
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
@@ -37,8 +38,6 @@ var requestHandler = function(request, response) {
   // URL, Method, msg{}
 
   if(request.method === 'GET'){
-    console.log(classes);
-    console.log('the requested', request.url);
     if(classes[request.url]){
       json = JSON.stringify({ results: classes[request.url] });
     }
@@ -46,26 +45,24 @@ var requestHandler = function(request, response) {
       statusCode = 404;
     }
   }
-
-  if(request.method === 'POST'){
+  else if(request.method === 'POST') {
     statusCode = 201;
 
     var body = "";
     request.on('data', function(data){
-      console.log('data is :', data)
       body += data;
-      console.log('body is :', body)
     });
 
     request.on('end', function() {
-      console.log('body is now: ', body);
-      //var POST = qs.parse(body);
       if(!classes.hasOwnProperty(request.url)) {
         classes[request.url] = [];
       }
 
       classes[request.url].push(JSON.parse(body));
-     console.log(classes[request.url]);
+      // fs.appendFile('storage.txt', body , function(err) {
+      //   if(err) throw err;
+      //   console.log('The data to append was appended to file!');
+      // });
     });
   }
 

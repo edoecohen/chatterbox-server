@@ -1,6 +1,7 @@
 /* Import node's http module: */
 var http = require("http");
-
+var connect = require('connect');
+var serveStatic = require('serve-static');
 
 // Every server needs to listen on a port with a unique number. The
 // standard port for HTTP servers is port 80, but that port is
@@ -15,7 +16,6 @@ var port = 3000;
 var ip = "127.0.0.1";
 
 
-
 // We use node's http module to create a server.
 //
 // The function we pass to http.createServer will be used to handle all
@@ -25,6 +25,11 @@ var ip = "127.0.0.1";
 var handleRequest = require('./request-handler.js');
 var server = http.createServer(handleRequest.requestHandler);
 console.log("Listening on http://" + ip + ":" + port);
+
+// client listening
+connect().use(serveStatic("./client")).listen(4000);
+
+// server listening
 server.listen(port, ip);
 
 // To start this server, run:
