@@ -1,7 +1,7 @@
 var app = {};
 
 
-app.server = 'http://127.0.0.1:3000/classes/room1';
+app.server = 'http://127.0.0.1:3000/classes/messages';
 
 app.send = function(msgObj){
 
@@ -36,6 +36,7 @@ app.fetch = function() {
   $.ajax({
     url: this.server,
     type: 'GET',
+    data: { order: '-createdAt' },
     dataType: 'json',
     contentType: 'application/json',
 
